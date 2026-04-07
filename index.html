@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CostByte | SA Startup Engine & Venture Studio</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .gradient-text { background: linear-gradient(90deg, #2563eb, #9333ea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+    <nav class="sticky top-0 z-[60] glass px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="bg-indigo-600 p-2 rounded-xl text-white shadow-lg shadow-indigo-200">
+                <i data-lucide="box" class="w-6 h-6"></i>
+            </div>
+            <span class="font-extrabold text-2xl tracking-tighter">CostByte</span>
+        </div>
+        <div class="flex gap-4 items-center">
+            <button onclick="toggleCart()" class="relative p-2 bg-white rounded-full shadow-sm border border-slate-100">
+                <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                <span id="cart-count" class="absolute -top-1 -right-1 bg-indigo-600 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-6 pt-10 pb-32">
+        
+        <section id="hero-section" class="text-center">
+            <h1 class="text-5xl font-extrabold mb-6 leading-tight tracking-tight">The <span class="gradient-text">South African</span> Startup Machine.</h1>
+            <p class="text-slate-500 mb-10 text-lg">Input your idea. We build the plan, the brand, the compliance, and the marketing engine instantly.</p>
+            
+            <div class="bg-white p-4 rounded-3xl shadow-2xl shadow-indigo-100 border border-indigo-50 flex flex-col gap-3">
+                <textarea id="biz-idea" class="w-full p-4 rounded-2xl border-none focus:ring-0 text-lg resize-none placeholder:text-slate-300" rows="3" placeholder="I want to start a luxury sneaker cleaning service in Sandton using locker drops..."></textarea>
+                <button onclick="runStartupAI()" class="bg-indigo-600 text-white font-bold py-5 rounded-2xl flex items-center justify-center gap-3 hover:bg-indigo-700 transition-all active:scale-95">
+                    <span>Analyze & Build Venture</span>
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </section>
+
+        <section id="ai-processing" class="hidden py-20 text-center">
+            <div class="relative inline-block">
+                <div class="absolute inset-0 animate-ping bg-indigo-400 opacity-20 rounded-full"></div>
+                <div class="bg-indigo-600 p-6 rounded-full text-white relative">
+                    <i data-lucide="cpu" class="w-12 h-12 animate-pulse"></i>
+                </div>
+            </div>
+            <h3 class="mt-8 font-bold text-xl" id="status-text">Analyzing Market Trends...</h3>
+            <div class="w-48 h-1.5 bg-slate-200 mx-auto mt-4 rounded-full overflow-hidden">
+                <div id="progress-bar" class="w-0 h-full bg-indigo-600 transition-all duration-500"></div>
+            </div>
+        </section>
+
+        <section id="dashboard" class="hidden animate-in fade-in slide-in-from-bottom-10 duration-700">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-extrabold">Venture Dashboard</h2>
+                <span class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full border border-green-200">LIVE READY</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold flex items-center gap-2 mb-4"><i data-lucide="file-text" class="text-indigo-600"></i> ZA Strategy Pack</h3>
+                    <div id="ai-plan" class="text-sm text-slate-600 space-y-3 mb-6"></div>
+                    <button onclick="downloadBizPlan()" class="w-full py-3 bg-slate-100 rounded-xl font-bold text-slate-700 flex items-center justify-center gap-2">
+                        <i data-lucide="download" class="w-4 h-4"></i> Export PDF
+                    </button>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold flex items-center gap-2 mb-4 text-red-600"><i data-lucide="shield-alert"></i> Compliance Vault</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center text-xs p-3 bg-slate-50 rounded-xl">
+                            <span>POPIA Framework</span>
+                            <span class="text-green-600 font-bold">READY</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs p-3 bg-slate-50 rounded-xl">
+                            <span>CIPC Name Reservation</span>
+                            <span class="text-orange-500 font-bold">PENDING</span>
+                        </div>
+                    </div>
+                    <button onclick="downloadComplianceZip()" class="mt-6 w-full py-3 bg-slate-900 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2">
+                        <i data-lucide="archive" class="w-4 h-4"></i> Download ZA Pack (.ZIP)
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-12">
+                <h3 class="text-2xl font-extrabold mb-6">Scale Your Operations</h3>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="bg-indigo-600 p-6 rounded-3xl text-white flex justify-between items-center shadow-xl shadow-indigo-100">
+                        <div>
+                            <h4 class="font-bold text-lg">Marketing Aggression Engine</h4>
+                            <p class="text-indigo-100 text-xs">Deploy 1,000 automated nodes for outreach.</p>
+                        </div>
+                        <button onclick="addToCart('Aggressive Growth Engine', 1250)" class="bg-white text-indigo-600 font-bold px-4 py-2 rounded-xl text-sm whitespace-nowrap">R1,250</button>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-lg">Branding & Logo Studio</h4>
+                            <p class="text-slate-400 text-xs">High-end visual identity & style guides.</p>
+                        </div>
+                        <button onclick="addToCart('Premium Branding Package', 3500)" class="bg-slate-900 text-white font-bold px-4 py-2 rounded-xl text-sm whitespace-nowrap">R3,500</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="cart-drawer" class="fixed inset-y-0 right-0 w-full max-w-sm bg-white shadow-2xl z-[100] transform translate-x-full transition-transform duration-500 ease-in-out">
+        <div class="h-full flex flex-col p-8">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-extrabold tracking-tight">Checkout</h2>
+                <button onclick="toggleCart()" class="p-2 bg-slate-100 rounded-full"><i data-lucide="x"></i></button>
+            </div>
+            
+            <div id="cart-items" class="flex-grow overflow-y-auto space-y-4 no-scrollbar"></div>
+            
+            <div class="pt-8 border-t border-slate-100 space-y-4">
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-400">Total</span>
+                    <span id="cart-total" class="text-3xl font-extrabold text-indigo-600">R0.00</span>
+                </div>
+                
+                <button onclick="initiatePayment()" class="w-full bg-indigo-600 text-white py-5 rounded-2xl font-bold text-lg shadow-xl shadow-indigo-100 active:scale-95 transition-all">
+                    Secure Pay (ZAR)
+                </button>
+                <div class="flex justify-center gap-4 opacity-50 grayscale scale-75">
+                    <img src="https://static.payfast.co.za/images/logos/logo-payfast.png" class="h-6" alt="PayFast">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" class="h-6" alt="PayPal">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pay-modal" class="fixed inset-0 bg-black/60 z-[110] hidden flex items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-md rounded-[2.5rem] p-8 animate-in zoom-in-95 duration-300">
+            <h3 class="text-2xl font-bold mb-2">Payment Portal</h3>
+            <p class="text-slate-400 text-sm mb-8">Secure encrypted transaction via PayFast or Stripe.</p>
+            
+            <div class="space-y-3">
+                <button onclick="alert('Redirecting to PayFast Secure...')" class="w-full flex justify-between items-center p-5 rounded-2xl border-2 border-indigo-50 hover:border-indigo-600 transition-all font-bold">
+                    <span>Instant EFT / ZAR Card</span>
+                    <i data-lucide="chevron-right" class="text-indigo-600"></i>
+                </button>
+                <button onclick="alert('Connecting to Stripe Global...')" class="w-full flex justify-between items-center p-5 rounded-2xl border-2 border-indigo-50 hover:border-indigo-600 transition-all font-bold">
+                    <span>Stripe (International)</span>
+                    <i data-lucide="globe" class="text-blue-500"></i>
+                </button>
+            </div>
+            <button onclick="document.getElementById('pay-modal').classList.add('hidden')" class="mt-6 w-full text-slate-400 font-medium">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Core State ---
+        let cart = [];
+        const statusSteps = [
+            "Analyzing South African Market...",
+            "Drafting POPIA Framework...",
+            "Calculating Financial Feasibility...",
+            "Generating Brand Assets...",
+            "Syncing Venture Dashboard..."
+        ];
+
+        // Initialize Icons
+        lucide.createIcons();
+
+        // --- Logic Engine ---
+        function runStartupAI() {
+            const idea = document.getElementById('biz-idea').value;
+            if (!idea) return alert("Please type your idea handsome!");
+
+            document.getElementById('hero-section').classList.add('hidden');
+            document.getElementById('ai-processing').classList.remove('hidden');
+
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 1;
+                document.getElementById('progress-bar').style.width = progress + '%';
+                
+                if(progress % 20 === 0) {
+                    document.getElementById('status-text').innerText = statusSteps[progress/20 - 1];
+                }
+
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    showDashboard(idea);
+                }
+            }, 30);
+        }
+
+        function showDashboard(idea) {
+            document.getElementById('ai-processing').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            
+            document.getElementById('ai-plan').innerHTML = `
+                <div class="p-3 bg-indigo-50 rounded-xl">
+                    <p class="font-bold text-indigo-700">Entity: (Pty) Ltd</p>
+                    <p class="text-xs">Optimized for South African Corporate Tax</p>
+                </div>
+                <p><strong>Proposed Brand:</strong> ${idea.split(' ')[0]} Launchpad</p>
+                <p><strong>Revenue Model:</strong> Recurring Subscription / Transaction Fee</p>
+                <p><strong>Marketing Angle:</strong> Targeted Social Media outreach in ZA Metros.</p>
+            `;
+            lucide.createIcons();
+        }
+
+        // --- E-Commerce Logic ---
+        function toggleCart() {
+            const drawer = document.getElementById('cart-drawer');
+            drawer.classList.toggle('translate-x-full');
+        }
+
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            updateCart();
+            toggleCart();
+        }
+
+        function updateCart() {
+            const list = document.getElementById('cart-items');
+            const count = document.getElementById('cart-count');
+            const total = document.getElementById('cart-total');
+            
+            list.innerHTML = cart.map((item, idx) => `
+                <div class="flex justify-between items-center p-4 bg-slate-50 rounded-2xl">
+                    <div>
+                        <p class="font-bold text-sm">${item.name}</p>
+                        <p class="text-xs text-slate-400">Professional Studio</p>
+                    </div>
+                    <span class="font-bold text-indigo-600">R${item.price}</span>
+                </div>
+            `).join('');
+            
+            const totalSum = cart.reduce((s, i) => s + i.price, 0);
+            count.innerText = cart.length;
+            total.innerText = `R${totalSum.toLocaleString('en-ZA')}.00`;
+        }
+
+        function initiatePayment() {
+            if(cart.length === 0) return alert("Your cart is empty, handsome!");
+            document.getElementById('pay-modal').classList.remove('hidden');
+        }
+
+        // --- Document Generation Logic ---
+        function downloadBizPlan() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const idea = document.getElementById('biz-idea').value;
+            
+            doc.setFontSize(22);
+            doc.text("CostByte Business Strategy", 20, 20);
+            doc.setFontSize(12);
+            doc.text("Project Vision:", 20, 40);
+            doc.text(idea, 20, 50, { maxWidth: 170 });
+            doc.text("Legal Structure: (Pty) Ltd (South Africa)", 20, 80);
+            doc.text("Generated: 2026-04-08", 20, 90);
+            
+            doc.save("Venture_Strategy_Pack.pdf");
+        }
+
+        async function downloadComplianceZip() {
+            const zip = new JSZip();
+            const idea = document.getElementById('biz-idea').value;
+
+            zip.file("POPIA_Privacy_Policy.txt", "Privacy Policy for South African Operations...");
+            zip.file("CIPC_Formation_Data.txt", `Proposed Name: ${idea} (Pty) Ltd\nRegistered Office: RSA`);
+            zip.file("Marketing_Engine_Setup.txt", "Node instructions for aggressive outreach...");
+
+            const content = await zip.generateAsync({type:"blob"});
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(content);
+            link.download = "ZA_Startup_Compliance.zip";
+            link.click();
+        }
+    </script>
+</body>
+</html>
