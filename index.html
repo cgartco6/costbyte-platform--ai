@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CostByte | Startup Intelligence & Venture Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+    <nav class="sticky top-0 z-50 glass border-b border-slate-200 px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="bg-blue-600 p-1.5 rounded-lg text-white">
+                <i data-lucide="zap" class="w-5 h-5"></i>
+            </div>
+            <span class="font-bold text-xl tracking-tight">CostByte</span>
+        </div>
+        <div class="flex gap-4 items-center">
+            <button onclick="toggleCart()" class="relative">
+                <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+                <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">0</span>
+            </button>
+            <button onclick="showSection('dashboard')" class="md:hidden"><i data-lucide="layout-dashboard"></i></button>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto pb-20">
+        
+        <section id="hero" class="p-6 text-center mt-8">
+            <h1 class="text-4xl font-extrabold mb-4 tracking-tight">Launch Your Empire <span class="text-blue-600">Instantly.</span></h1>
+            <p class="text-slate-500 mb-8 max-w-md mx-auto">Input your vision. Our AI Engine builds the business, the brand, and the marketing strategy in seconds.</p>
+            
+            <div class="bg-white p-2 rounded-2xl shadow-xl border border-slate-200 flex flex-col gap-2">
+                <textarea id="biz-idea" class="w-full p-4 rounded-xl border-none focus:ring-0 text-lg resize-none" rows="3" placeholder="Explain your startup idea..."></textarea>
+                <button onclick="analyzeIdea()" class="bg-slate-900 text-white font-semibold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-slate-800 transition-all">
+                    <span>Analyze Idea</span>
+                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </section>
+
+        <section id="ai-loading" class="hidden p-10 text-center">
+            <div class="animate-spin mb-4 inline-block"><i data-lucide="refresh-cw" class="w-10 h-10 text-blue-600"></i></div>
+            <p class="font-medium">Compiling Market Data & Financial Models...</p>
+        </section>
+
+        <section id="store" class="p-6">
+            <div class="flex justify-between items-end mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold">Venture Studio</h2>
+                    <p class="text-sm text-slate-500">Professional execution for your startup.</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all">
+                    <div class="h-40 bg-slate-200 flex items-center justify-center">
+                        <i data-lucide="palette" class="w-12 h-12 text-slate-400"></i>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg">Branding Studio</h3>
+                        <p class="text-sm text-slate-500 mb-4">Complete Visual ID, Logos, and Style Guides.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold">$499</span>
+                            <button onclick="addToCart('Branding Studio', 499)" class="bg-blue-600 text-white p-2 rounded-lg"><i data-lucide="plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all">
+                    <div class="h-40 bg-slate-900 flex items-center justify-center">
+                        <i data-lucide="trending-up" class="w-12 h-12 text-blue-400"></i>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg">Growth Engine</h3>
+                        <p class="text-sm text-slate-500 mb-4">Aggressive social ads and automated funneling.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold">$850</span>
+                            <button onclick="addToCart('Growth Engine', 850)" class="bg-blue-600 text-white p-2 rounded-lg"><i data-lucide="plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all">
+                    <div class="h-40 bg-blue-100 flex items-center justify-center">
+                        <i data-lucide="code" class="w-12 h-12 text-blue-600"></i>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg">MVP Development</h3>
+                        <p class="text-sm text-slate-500 mb-4">Custom app development for your core idea.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold">$2,500</span>
+                            <button onclick="addToCart('MVP Development', 2500)" class="bg-blue-600 text-white p-2 rounded-lg"><i data-lucide="plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="dashboard" class="hidden p-6">
+            <h2 class="text-2xl font-bold mb-6">Your Venture Dashboard</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200">
+                    <h3 class="font-bold flex items-center gap-2 mb-4"><i data-lucide="file-text"></i> Business Plan</h3>
+                    <div id="plan-output" class="text-sm text-slate-600 space-y-2"></div>
+                    <button onclick="downloadPDF()" class="mt-4 w-full py-2 bg-slate-100 rounded-lg font-semibold text-sm">Download PDF</button>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200">
+                    <h3 class="font-bold flex items-center gap-2 mb-4"><i data-lucide="pie-chart"></i> Financial Forecast</h3>
+                    <canvas id="financialChart" class="w-full h-32 bg-slate-50 rounded"></canvas>
+                    <p class="mt-4 text-xs text-slate-400 font-mono">ESTIMATED YEAR 1 ARR: $120,000</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="cart-sidebar" class="fixed right-0 top-0 h-full w-80 bg-white shadow-2xl z-[60] transform translate-x-full transition-transform duration-300 p-6">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-xl font-bold">Your Cart</h2>
+            <button onclick="toggleCart()"><i data-lucide="x"></i></button>
+        </div>
+        <div id="cart-items" class="space-y-4 mb-8"></div>
+        <div class="border-t pt-4">
+            <div class="flex justify-between font-bold mb-4">
+                <span>Total</span>
+                <span id="cart-total">$0</span>
+            </div>
+            <button class="w-full py-4 bg-blue-600 text-white rounded-xl font-bold shadow-lg shadow-blue-200">Checkout Now</button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        let cart = [];
+
+        function toggleCart() {
+            const sidebar = document.getElementById('cart-sidebar');
+            sidebar.classList.toggle('translate-x-full');
+        }
+
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            updateCart();
+            if(window.innerWidth < 768) toggleCart();
+        }
+
+        function updateCart() {
+            const list = document.getElementById('cart-items');
+            const count = document.getElementById('cart-count');
+            const total = document.getElementById('cart-total');
+            
+            list.innerHTML = cart.map((item, index) => `
+                <div class="flex justify-between items-center text-sm border-b pb-2">
+                    <span>${item.name}</span>
+                    <span class="font-bold">$${item.price}</span>
+                </div>
+            `).join('');
+            
+            count.innerText = cart.length;
+            total.innerText = `$${cart.reduce((sum, item) => sum + item.price, 0)}`;
+        }
+
+        function analyzeIdea() {
+            const idea = document.getElementById('biz-idea').value;
+            if(!idea) return alert("Please type your idea handsome!");
+
+            document.getElementById('hero').classList.add('hidden');
+            document.getElementById('ai-loading').classList.remove('hidden');
+
+            // Simulate AI Compilation
+            setTimeout(() => {
+                document.getElementById('ai-loading').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+                
+                const planOutput = document.getElementById('plan-output');
+                planOutput.innerHTML = `
+                    <p><strong>Proposed Name:</strong> ${idea.split(' ')[0]}Flow</p>
+                    <p><strong>Market Gap:</strong> High demand for automated solutions in the current sector.</p>
+                    <p><strong>Action Items:</strong> Register domain, define Brand Voice, initiate Seed Round.</p>
+                `;
+                lucide.createIcons();
+                window.scrollTo(0, document.getElementById('dashboard').offsetTop - 100);
+            }, 2500);
+        }
+
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text("CostByte Business Strategy", 10, 10);
+            doc.text("Project: " + document.getElementById('biz-idea').value, 10, 20);
+            doc.text("Generated by CostByte AI Engine", 10, 30);
+            doc.save("business-plan.pdf");
+        }
+        
+        function showSection(id) {
+            document.getElementById(id).scrollIntoView({behavior: 'smooth'});
+        }
+    </script>
+</body>
+</html>
