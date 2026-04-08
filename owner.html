@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><title>CostByte Master Ledger</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-[#0a0a0a] text-white p-8 font-mono">
+    <div class="max-w-6xl mx-auto">
+        <header class="flex justify-between items-end mb-12 border-b-2 border-indigo-900 pb-8">
+            <div>
+                <h1 class="text-4xl font-black uppercase italic tracking-tighter">Sovereign Ledger</h1>
+                <p class="text-indigo-500 text-xs mt-2 font-bold">FRIDAY SETTLEMENT CYCLE: 30 / 20 / 50 SPLIT</p>
+            </div>
+            <div class="text-right text-xs font-bold text-slate-500 uppercase">
+                Zero-Budget Organic Tracking
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="bg-slate-900 p-8 border-2 border-slate-800">
+                <p class="text-[10px] text-slate-500 font-black">FNB (30%)</p>
+                <p id="fnb-val" class="text-4xl font-black mt-2 text-white">R0.00</p>
+            </div>
+            <div class="bg-slate-900 p-8 border-2 border-slate-800">
+                <p class="text-[10px] text-slate-500 font-black">AB (20%)</p>
+                <p id="ab-val" class="text-4xl font-black mt-2 text-white">R0.00</p>
+            </div>
+            <div class="bg-indigo-950 p-8 border-2 border-indigo-600 shadow-[0_0_20px_rgba(79,70,229,0.3)]">
+                <p class="text-[10px] text-indigo-400 font-black">SYSTEM RE-INVEST (50%)</p>
+                <p id="sys-val" class="text-4xl font-black mt-2 text-white">R0.00</p>
+            </div>
+        </div>
+
+        <div class="bg-slate-900 border-2 border-slate-800 overflow-hidden">
+            <div class="p-6 bg-slate-800/50 font-black uppercase text-xs tracking-widest border-b-2 border-slate-800">
+                Live Conversion Tracking
+            </div>
+            <table class="w-full text-left text-[11px]">
+                <thead>
+                    <tr class="bg-black text-slate-500">
+                        <th class="p-4">Customer</th>
+                        <th class="p-4">Source</th>
+                        <th class="p-4">Country</th>
+                        <th class="p-4">Province/Town</th>
+                        <th class="p-4">Revenue</th>
+                    </tr>
+                </thead>
+                <tbody id="ledger-body" class="divide-y divide-slate-800">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Simulation of captured metadata
+        const data = [
+            {id: "CB-001", src: "TikTok", country: "South Africa", loc: "Gauteng / Sandton", rev: 999},
+            {id: "CB-002", src: "Twitter/X", country: "South Africa", loc: "Western Cape / CT", rev: 250},
+            {id: "CB-003", src: "LinkedIn", country: "United Kingdom", loc: "London / Soho", rev: 999}
+        ];
+
+        let fnb=0, ab=0, sys=0;
+        data.forEach(c => {
+            fnb += c.rev * 0.3; ab += c.rev * 0.2; sys += c.rev * 0.5;
+            document.getElementById('ledger-body').innerHTML += `
+                <tr>
+                    <td class="p-4 font-bold">${c.id}</td>
+                    <td class="p-4 text-indigo-400 font-black">${c.src}</td>
+                    <td class="p-4">${c.country}</td>
+                    <td class="p-4">${c.loc}</td>
+                    <td class="p-4 font-black text-white">R${c.rev}</td>
+                </tr>
+            `;
+        });
+        document.getElementById('fnb-val').innerText = `R${fnb.toFixed(2)}`;
+        document.getElementById('ab-val').innerText = `R${ab.toFixed(2)}`;
+        document.getElementById('sys-val').innerText = `R${sys.toFixed(2)}`;
+        lucide.createIcons();
+    </script>
+</body>
+</html>
