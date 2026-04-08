@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CostByte | Neural Venture Ecosystem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .modal { backdrop-filter: blur(8px); transition: 0.3s ease-in-out; }
+        .hidden-modal { opacity: 0; pointer-events: none; transform: scale(0.95); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-950">
+
+    <nav class="p-6 flex justify-between items-center max-w-7xl mx-auto">
+        <div class="font-black text-2xl italic tracking-tighter flex items-center gap-2">
+            <i data-lucide="brain-circuit" class="text-indigo-600"></i> COSTBYTE
+        </div>
+        <button onclick="toggleModal('login')" class="bg-slate-950 text-white px-6 py-2 rounded-full font-bold text-xs">LOGIN</button>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-6 py-20 text-center">
+        <h1 class="text-6xl md:text-8xl font-extrabold tracking-tighter mb-6">A LIVING <span class="text-indigo-600">ECOSYSTEM.</span></h1>
+        <p class="text-xl text-slate-500 max-w-2xl mx-auto mb-12">Self-healing, self-funding, and ready for AGI. Build your venture on the first platform that learns as you grow.</p>
+        
+        <div class="bg-white border border-slate-200 p-8 rounded-3xl shadow-2xl max-w-3xl mx-auto text-left">
+            <h3 class="font-bold mb-4 uppercase text-[10px] tracking-widest text-indigo-600">Neural Intake Queue</h3>
+            <textarea id="vision" class="w-full bg-slate-50 p-6 rounded-2xl border-none focus:ring-2 focus:ring-indigo-500 mb-6" rows="4" placeholder="Input your venture vision for the Neural Engine..."></textarea>
+            <button onclick="toggleModal('login')" class="w-full bg-indigo-600 text-white py-5 rounded-2xl font-black text-xl hover:bg-indigo-700">INITIALIZE DEPLOYMENT</button>
+        </div>
+    </main>
+
+    <div id="login-modal" class="modal hidden-modal fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-950/40">
+        <div class="bg-white p-10 rounded-[2.5rem] shadow-2xl w-full max-w-md relative">
+            <button onclick="toggleModal('login')" class="absolute top-6 right-6 text-slate-400 hover:text-black"><i data-lucide="x"></i></button>
+            <h2 class="text-3xl font-extrabold mb-2 tracking-tighter">Secure Access</h2>
+            <p class="text-slate-500 text-xs mb-8 font-medium">AES-256 Encrypted Handshake Active.</p>
+            
+            <div class="space-y-4">
+                <input type="email" id="email" placeholder="Email Address" class="w-full p-4 bg-slate-50 rounded-xl border border-slate-100 outline-none focus:ring-2 focus:ring-indigo-500">
+                <input type="password" id="pass" placeholder="Password" class="w-full p-4 bg-slate-50 rounded-xl border border-slate-100 outline-none focus:ring-2 focus:ring-indigo-500">
+                <button onclick="verifyAccess()" class="w-full bg-slate-950 text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs">Verify Identity</button>
+                <div class="flex justify-between text-[10px] font-bold text-slate-400 px-1">
+                    <button onclick="alert('Reset link sent to secure email.')">FORGOT PASSWORD?</button>
+                    <button onclick="toggleModal('login')">REGISTER</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        function toggleModal(id) {
+            document.getElementById(`${id}-modal`).classList.toggle('hidden-modal');
+        }
+
+        function verifyAccess() {
+            const email = document.getElementById('email').value;
+            // Admin/Owner Bypass for Testing
+            if(email === 'owner@costbyte.io') window.location.href = 'owner.html';
+            else if(email === 'admin@costbyte.io') window.location.href = 'admin.html';
+            else window.location.href = 'dashboard.html?tier=Gold';
+        }
+    </script>
+</body>
+</html>
