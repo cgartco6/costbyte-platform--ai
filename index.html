@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CostByte | Professional Venture Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .hero-mask { mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%); -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%); }
+        .modal { backdrop-filter: blur(8px); transition: 0.3s ease-in-out; }
+        .hidden-modal { opacity: 0; pointer-events: none; transform: scale(0.95); }
+    </style>
+</head>
+<body class="bg-white text-slate-900">
+
+    <nav class="sticky top-0 z-[60] glass px-6 py-4 border-b border-slate-100">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="font-extrabold text-2xl tracking-tighter flex items-center gap-2 text-slate-950">
+                <i data-lucide="award" class="w-6 h-6 text-indigo-600 fill-current"></i> CostByte
+            </div>
+            <div class="flex items-center gap-6 text-xs font-semibold">
+                <a href="#tiers" class="text-slate-600 hover:text-indigo-600">Pricing</a>
+                <a href="#cashflow" class="text-orange-600 hover:text-orange-700">Cashflow Engine</a>
+                <button onclick="toggleModal('cart')" class="relative text-slate-600 hover:text-indigo-600">
+                    <i data-lucide="shopping-cart"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-3 bg-indigo-600 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold hidden">0</span>
+                </button>
+                <button onclick="toggleModal('auth')" class="bg-slate-950 text-white px-5 py-2 rounded-full text-xs font-bold hover:bg-slate-800 Transition-all">Login</button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="border-b border-slate-100 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-6 py-24 grid md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <span class="inline-flex gap-2 px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-semibold rounded-full border border-indigo-100">
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> AES-256 Military Grade Security
+                </span>
+                <h1 class="text-5xl md:text-6xl font-extrabold leading-tight tracking-tighter text-slate-950">Build It For R0. <br><span class="text-indigo-600">Scale It to Profit.</span></h1>
+                <p class="text-lg text-slate-600 max-w-lg">CostByte deploys your storefront, generates your organic viral content, and hardens your legal compliance. No BS. Just professional output.</p>
+                <div class="pt-4 flex items-center gap-3">
+                    <a href="#intake" class="bg-indigo-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-indigo-700 transition-all text-sm flex items-center gap-2">Initialize Build <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                    <a href="#tiers" class="text-slate-600 font-semibold text-sm hover:text-indigo-600">Explore Free Tier <i data-lucide="chevron-right" class="w-4 h-4 inline"></i></a>
+                </div>
+            </div>
+            <div class="hero-mask relative group">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop" alt="CostByte Venture Growth" class="w-full h-auto rounded-3xl shadow-2xl border border-slate-100 grayscale hover:grayscale-0 transition-all duration-1000">
+                <div class="absolute inset-0 bg-indigo-900/10 rounded-3xl group-hover:bg-indigo-900/0 transition-all"></div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-24 space-y-32">
+        
+        <section id="intake" class="bg-white p-12 rounded-3xl border border-slate-100 shadow-xl shadow-slate-100/50">
+            <div class="max-w-xl mb-12">
+                <h2 class="text-4xl font-extrabold mb-3 tracking-tighter">Venture Intake Engine</h2>
+                <p class="text-slate-600">Describe your revenue model. The system creates and brands your venture with 24/7 automated lead generation included.</p>
+            </div>
+            <textarea id="vision" class="w-full p-6 bg-slate-50 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 text-lg min-h-[160px] mb-12" placeholder="Describe your business..."></textarea>
+            
+            <h3 class="font-bold text-slate-500 uppercase text-xs tracking-widest mb-4">Select Deployment Tier</h3>
+            <div id="tiers" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <p class="font-bold text-slate-900 text-sm">Always Free</p>
+                        <p class="text-4xl font-extrabold tracking-tighter text-slate-950 mt-1 mb-4">R0</p>
+                        <ul class="text-xs text-slate-500 space-y-1.5 list-disc list-inside">
+                            <li>Ghost Build</li>
+                            <li>Basic Landing Page</li>
+                            <li>SA POPIA Docs</li>
+                        </ul>
+                    </div>
+                    <button onclick="addToCart('Free', 0)" class="w-full mt-6 py-3 bg-white border border-slate-200 rounded-xl font-bold text-xs hover:bg-slate-100 transition-all">Try Free</button>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <p class="font-bold text-slate-900 text-sm">Bronze Venture</p>
+                        <p class="text-4xl font-extrabold tracking-tighter text-slate-950 mt-1 mb-4">R250</p>
+                        <ul class="text-xs text-slate-500 space-y-1.5 list-disc list-inside">
+                            <li>Logo Suite</li>
+                            <li>Storefront Build</li>
+                            <li>Organic Viral Scripts</li>
+                        </ul>
+                    </div>
+                    <button onclick="addToCart('Bronze', 250)" class="w-full mt-6 py-3 bg-white border border-slate-200 rounded-xl font-bold text-xs hover:bg-indigo-50 transition-all">Add Bronze</button>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border-2 border-indigo-600 flex flex-col justify-between relative shadow-xl shadow-indigo-100/50">
+                    <span class="absolute -top-3 left-6 bg-indigo-600 text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-widest">Most Popular</span>
+                    <div>
+                        <p class="font-bold text-slate-900 text-sm">Silver Growth</p>
+                        <p class="text-4xl font-extrabold tracking-tighter text-slate-950 mt-1 mb-4">R599</p>
+                        <ul class="text-xs text-slate-500 space-y-1.5 list-disc list-inside">
+                            <li>Inventory Sync</li>
+                            <li>20 Organic Ads</li>
+                            <li>GDPR Compliance</li>
+                        </ul>
+                    </div>
+                    <button onclick="addToCart('Silver', 599)" class="w-full mt-6 py-3 bg-indigo-600 text-white rounded-xl font-bold text-xs hover:bg-indigo-700 transition-all">Add Silver</button>
+                </div>
+                <div class="bg-slate-950 p-6 rounded-2xl text-white flex flex-col justify-between">
+                    <div>
+                        <p class="font-bold text-indigo-300 text-sm">Gold Automation</p>
+                        <p class="text-4xl font-extrabold tracking-tighter text-white mt-1 mb-4">R999</p>
+                        <ul class="text-xs text-indigo-100 space-y-1.5 list-disc list-inside">
+                            <li>Outreach Node</li>
+                            <li>Profit Maximizer</li>
+                            <li>Global Expansion</li>
+                        </ul>
+                    </div>
+                    <button onclick="addToCart('Gold', 999)" class="w-full mt-6 py-3 bg-white text-slate-950 rounded-xl font-bold text-xs hover:bg-indigo-50 transition-all">Add Gold</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="cashflow" class="bg-white p-12 rounded-3xl border border-orange-100 text-center shadow-xl shadow-orange-100/30">
+            <i data-lucide="zap" class="w-16 h-16 text-orange-600 bg-orange-50 p-4 rounded-full mx-auto mb-8"></i>
+            <h2 class="text-5xl font-extrabold tracking-tighter mb-4 italic uppercase">Aggressive Cashflow Engine</h2>
+            <p class="text-lg text-slate-600 max-w-xl mx-auto mb-12">STANDALONE UPGRADE: Not part of standard marketing campaigns. Targets instant cashflow via direct API outreach and addictive visual content.</p>
+            <div class="bg-white p-8 rounded-2xl border border-slate-100 text-left max-w-md mx-auto flex justify-between items-center shadow-lg">
+                <div>
+                    <p class="text-4xl font-extrabold tracking-tighter text-slate-950">R1,500 <span class="text-sm font-bold text-slate-400">once</span></p>
+                    <p class="text-[10px] text-orange-600 font-bold uppercase mt-1 tracking-widest">Instant Acquisition Node</p>
+                </div>
+                <button onclick="addToCart('Cashflow', 1500)" class="bg-orange-600 text-white px-6 py-3 rounded-full text-xs font-bold hover:bg-orange-700 transition-all">Activate Engine</button>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t mt-24 py-16 px-6 text-xs text-slate-500 bg-white">
+        <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12">
+            <div class="font-extrabold text-lg tracking-tighter text-slate-950 flex items-center gap-1.5"><i data-lucide="award" class="text-indigo-600 fill-current w-5 h-5"></i> CostByte</div>
+            <div class="space-y-2"><strong>Legal</strong><br>POPIA Policy<br>Terms of Service</div>
+            <div class="space-y-2"><strong>Platform</strong><br>Venture Studio<br>Owner Ledger</div>
+            <div class="space-y-2"><strong>Security</strong><br>AES-256 Vault<br>SSL Encryption</div>
+        </div>
+        <div class="max-w-7xl mx-auto mt-12 pt-8 border-t text-center">© 2026 CostByte Empire. Highly Professional Output.</div>
+    </footer>
+
+    <div id="auth-modal" class="modal hidden-modal fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-950/60">
+        <div class="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-sm relative">
+            <button onclick="toggleModal('auth')" class="absolute top-6 right-6 text-slate-400 hover:text-black"><i data-lucide="x"></i></button>
+            <h2 class="text-3xl font-extrabold mb-2 tracking-tighter">Login</h2>
+            <p class="text-slate-500 text-xs mb-8">SECURE AES-256 ACCESS ACTIVE.</p>
+            <div class="space-y-4">
+                <input type="email" id="email" placeholder="Email Address" class="w-full p-4 bg-slate-50 rounded-xl border border-slate-100 outline-none focus:ring-1 focus:ring-indigo-300">
+                <input type="password" id="pass" placeholder="Password" class="w-full p-4 bg-slate-50 rounded-xl border border-slate-100 outline-none focus:ring-1 focus:ring-indigo-300">
+                <button onclick="alert('Access Verified. Loading Dashboard...'); window.location.href='portal.html'" class="w-full bg-slate-950 text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs">Authorize</button>
+                <div class="flex justify-between text-[10px] text-slate-400 px-1 font-semibold">
+                    <a href="#" class="hover:text-black">Reset Password</a>
+                    <a href="#tiers" onclick="toggleModal('auth')" class="hover:text-black">Register</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="cart-modal" class="modal hidden-modal fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-950/60">
+        <div class="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-md relative">
+            <button onclick="toggleModal('cart')" class="absolute top-6 right-6 text-slate-400 hover:text-black"><i data-lucide="x"></i></button>
+            <h2 class="text-3xl font-extrabold mb-8 tracking-tighter">My Cart</h2>
+            <div id="cart-items" class="space-y-4 text-sm font-semibold text-slate-600 min-h-[100px]">
+                </div>
+            <div class="border-t mt-8 pt-6 flex justify-between items-baseline">
+                <p class="text-[10px] text-slate-400 font-bold uppercase">Total Due</p>
+                <p id="cart-total" class="text-3xl font-extrabold tracking-tighter text-slate-950">R0.00</p>
+            </div>
+            <button onclick="alert('Proceeding to Secure PayFast Gateway.')" class="w-full mt-8 bg-indigo-600 text-white py-5 rounded-xl font-bold hover:bg-indigo-700 transition-all text-sm">Proceed to Payment</button>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        let cart = [];
+
+        function toggleModal(id) {
+            document.getElementById(`${id}-modal`).classList.toggle('hidden-modal');
+            if(id === 'cart') renderCart();
+        }
+
+        function addToCart(item, price) {
+            cart.push({ name: item, price: price });
+            updateCartCount();
+            alert(`${item} added to cart.`);
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartCount();
+            renderCart();
+        }
+
+        function updateCartCount() {
+            const count = document.getElementById('cart-count');
+            count.innerText = cart.length;
+            count.className = cart.length > 0 ? "absolute -top-2 -right-3 bg-indigo-600 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold" : "hidden";
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items');
+            container.innerHTML = "";
+            let total = 0;
+
+            if(cart.length === 0) container.innerHTML = "<p class='text-xs text-slate-400 text-center'>Your cart is empty, handsome.</p>";
+
+            cart.forEach((item, index) => {
+                total += item.price;
+                container.innerHTML += `
+                    <div class="flex justify-between items-center p-4 bg-slate-50 rounded-xl border">
+                        <div>
+                            <p class="text-slate-950">${item.name} Tier Deployment</p>
+                            <p class="text-xs text-indigo-600 font-bold">R${item.price.toFixed(2)}</p>
+                        </div>
+                        <button onclick="removeFromCart(${index})" class="text-slate-400 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </div>
+                `;
+            });
+            document.getElementById('cart-total').innerText = `R${total.toFixed(2)}`;
+            lucide.createIcons();
+        }
+    </script>
+</body>
+</html>
