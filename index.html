@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CostByte | Build Your Empire</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .neo-brutal { border: 3px solid #000; box-shadow: 6px 6px 0px #000; transition: 0.2s; }
+        .neo-brutal:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #000; }
+        .plan-card:hover { background: #f8fafc; }
+    </style>
+</head>
+<body class="bg-slate-50 text-black p-4 md:p-10">
+    <nav class="max-w-6xl mx-auto flex justify-between items-center mb-16">
+        <div class="font-black text-3xl uppercase italic tracking-tighter flex items-center gap-2">
+            <i data-lucide="zap" class="text-indigo-600"></i> CostByte
+        </div>
+        <div class="bg-black text-white text-[10px] font-bold px-3 py-1 uppercase">Organic Engine: 2026.04</div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto">
+        <h1 class="text-5xl md:text-7xl font-black leading-tight mb-8">BUILD IT FOR <span class="text-indigo-600">FREE.</span><br>SCALE IT TO PROFIT.</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
+            <button onclick="launch('Free')" class="plan-card neo-brutal p-6 text-left bg-white">
+                <p class="font-black text-xl">R0</p>
+                <p class="text-[10px] font-bold uppercase text-slate-400">Always Free</p>
+                <p class="text-[10px] mt-4">Basic Landing Page + Limited AI Support.</p>
+            </button>
+            <button onclick="launch('Bronze')" class="plan-card neo-brutal p-6 text-left bg-white">
+                <p class="font-black text-xl">R250</p>
+                <p class="text-[10px] font-bold uppercase text-indigo-600">Bronze</p>
+                <p class="text-[10px] mt-4 text-slate-500">Logo + Full Storefront + Viral Scripts.</p>
+            </button>
+            <button onclick="launch('Silver')" class="plan-card neo-brutal p-6 text-left bg-white border-indigo-200">
+                <p class="font-black text-xl">R599</p>
+                <p class="text-[10px] font-bold uppercase text-indigo-600">Silver</p>
+                <p class="text-[10px] mt-4 text-slate-500">Inventory Sync + 20 Organic Ad Templates.</p>
+            </button>
+            <button onclick="launch('Gold')" class="plan-card bg-black text-white p-6 text-left border-3 border-black shadow-[6px_6px_0px_#4f46e5]">
+                <p class="font-black text-xl">R999</p>
+                <p class="text-[10px] font-bold uppercase text-indigo-400">Gold</p>
+                <p class="text-[10px] mt-4 text-slate-300">Outreach Node + AI Profit Maximizer.</p>
+            </button>
+        </div>
+
+        <div class="bg-white neo-brutal p-8">
+            <textarea id="vision" class="w-full p-6 border-2 border-black rounded-none text-lg mb-6 focus:outline-none" rows="3" placeholder="Enter your business vision..."></textarea>
+            <button onclick="launch('Active')" class="w-full bg-indigo-600 text-white py-6 text-2xl font-black uppercase neo-brutal">Initialize Build</button>
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+        function launch(tier) {
+            const v = document.getElementById('vision').value;
+            if(!v && tier !== 'Free') return alert("Enter vision, handsome.");
+            window.location.href = `dashboard.html?tier=${tier}&vision=${encodeURIComponent(v)}`;
+        }
+    </script>
+</body>
+</html>
