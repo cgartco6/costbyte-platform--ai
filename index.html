@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CostByte | Build Your Venture</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .neo-brutal { border: 3px solid #000; box-shadow: 8px 8px 0px #000; transition: 0.2s; }
+        .neo-brutal:active { transform: translate(4px, 4px); box-shadow: 4px 4px 0px #000; }
+    </style>
+</head>
+<body class="bg-slate-50 text-black p-6">
+    <nav class="max-w-4xl mx-auto flex justify-between items-center mb-20">
+        <div class="font-black text-3xl uppercase italic tracking-tighter flex items-center gap-2">
+            <i data-lucide="zap" class="text-indigo-600"></i> CostByte
+        </div>
+        <div class="text-[10px] font-bold border-2 border-black px-3 py-1 bg-white uppercase">Sovereign Build Engine</div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto">
+        <h1 class="text-6xl font-black leading-tight mb-6">BUILD YOUR BUSINESS <br>FOR <span class="text-indigo-600">R250.</span></h1>
+        <p class="text-xl font-bold mb-12 text-slate-700">No hidden costs. No ad budget required. We build your digital assets and viral organic scripts. You launch.</p>
+
+        <div class="bg-white neo-brutal p-8 mb-12">
+            <label class="block font-black uppercase text-xs mb-3">Your Venture Vision</label>
+            <textarea id="vision" class="w-full p-4 border-2 border-black rounded-none text-lg mb-8 focus:outline-none" rows="3" placeholder="Describe what you want to sell..."></textarea>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                <button onclick="selectT(250)" class="plan-card neo-brutal p-6 text-left bg-white hover:bg-indigo-50" id="btn250">
+                    <p class="font-black text-3xl">R250</p>
+                    <p class="text-xs font-bold uppercase mt-2">Bronze Build</p>
+                    <p class="text-[10px] mt-4 text-slate-500">Logo + Digital Storefront + Organic Viral Scripts</p>
+                </button>
+                <button onclick="selectT(999)" class="plan-card neo-brutal p-6 text-left bg-white hover:bg-indigo-50" id="btn999">
+                    <p class="font-black text-3xl">R999</p>
+                    <p class="text-xs font-bold uppercase mt-2">Gold Build</p>
+                    <p class="text-[10px] mt-4 text-slate-500">Advanced Site + Full Outreach Automation Node</p>
+                </button>
+            </div>
+
+            <button onclick="launchVenture()" class="w-full bg-black text-white py-6 text-2xl font-black uppercase neo-brutal">Initialize Build</button>
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+        let selected = 250;
+        function selectT(p) {
+            selected = p;
+            document.querySelectorAll('.plan-card').forEach(b => b.classList.remove('bg-indigo-100'));
+            document.getElementById('btn'+p).classList.add('bg-indigo-100');
+        }
+        function launchVenture() {
+            const v = document.getElementById('vision').value;
+            if(!v) return alert("Vision required, handsome.");
+            // Logic to capture Source/Location for Owner Ledger
+            const source = new URLSearchParams(window.location.search).get('ref') || 'Direct';
+            window.location.href = `dashboard.html?vision=${encodeURIComponent(v)}&p=${selected}&src=${source}`;
+        }
+    </script>
+</body>
+</html>
