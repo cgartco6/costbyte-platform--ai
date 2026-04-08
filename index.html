@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CostByte | Professional Digital Ecosystem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #ffffff; color: #0f172a; }
+        .enterprise-gradient { background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%); }
+    </style>
+</head>
+<body class="antialiased">
+    <nav class="max-w-7xl mx-auto px-8 py-10 flex justify-between items-center border-b border-slate-50">
+        <div class="text-2xl font-black tracking-tight italic flex items-center gap-2">
+            <i data-lucide="award" class="text-indigo-600"></i> COSTBYTE
+        </div>
+        <div class="hidden md:flex gap-12 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">
+            <a href="#solutions" class="hover:text-black">Solutions</a>
+            <a href="#compliance" class="hover:text-black">Compliance</a>
+            <button onclick="document.getElementById('auth').scrollIntoView()" class="bg-indigo-600 text-white px-8 py-3 rounded-full hover:shadow-xl transition-all">Client Access</button>
+        </div>
+    </nav>
+
+    <section class="max-w-5xl mx-auto px-8 py-32 text-center">
+        <h1 class="text-7xl font-extrabold tracking-tighter mb-8 leading-[0.9]">Autonomous Branding.<br><span class="text-indigo-600">Enterprise Growth.</span></h1>
+        <p class="text-xl text-slate-500 max-w-2xl mx-auto mb-16 font-medium leading-relaxed">We build real business ecosystems. Not just websites—we deploy fully automated branding, marketing, and global compliance for serious operators.</p>
+        <div class="flex flex-col md:flex-row gap-6 justify-center">
+            <button class="bg-slate-900 text-white px-12 py-6 rounded-2xl font-bold text-lg">Initialize Pro Build</button>
+            <button class="bg-orange-600 text-white px-12 py-6 rounded-2xl font-bold text-lg italic shadow-2xl shadow-orange-200">Trigger Cashflow Engine</button>
+        </div>
+    </section>
+
+    <section id="solutions" class="max-w-7xl mx-auto px-8 py-32 bg-slate-50 rounded-[4rem]">
+        <div class="grid md:grid-cols-3 gap-12">
+            <div class="bg-white p-12 rounded-[3rem] shadow-sm border border-slate-100">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Starter Studio</p>
+                <h3 class="text-4xl font-black mb-8">R250</h3>
+                <ul class="space-y-4 mb-12 text-sm text-slate-500">
+                    <li>✓ High-Conversion Storefront</li>
+                    <li>✓ Professional Logo Suite</li>
+                    <li>✓ 24/7 Automated Lead Gen</li>
+                    <li>✓ POPIA Legal Bundle</li>
+                </ul>
+                <div class="p-3 bg-green-50 text-green-700 text-[10px] font-bold text-center rounded-xl mb-6">458/500 SLOTS FILLED</div>
+                <button class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold uppercase tracking-widest text-xs">Buy Now</button>
+            </div>
+            <div class="enterprise-gradient p-12 rounded-[3rem] text-white shadow-2xl relative">
+                <p class="text-[10px] font-black opacity-70 uppercase tracking-widest mb-4">Silver Pro</p>
+                <h3 class="text-4xl font-black mb-8">R599</h3>
+                <ul class="space-y-4 mb-12 text-sm opacity-90">
+                    <li>✓ Full Agency Branding</li>
+                    <li>✓ Global GDPR + POPIA Vault</li>
+                    <li>✓ 50+ Addictive Ad Templates</li>
+                    <li>✓ Autonomous Inventory Sync</li>
+                </ul>
+                <div class="p-3 bg-white/20 text-white text-[10px] font-bold text-center rounded-xl mb-6">188/200 SLOTS FILLED</div>
+                <button class="w-full py-4 bg-white text-indigo-600 rounded-2xl font-bold uppercase tracking-widest text-xs">Claim Spot</button>
+            </div>
+            <div class="bg-slate-900 p-12 rounded-[3rem] text-white">
+                <p class="text-[10px] font-black text-orange-400 uppercase tracking-widest mb-4">Cashflow Bolt-On</p>
+                <h3 class="text-4xl font-black mb-8">R1,500</h3>
+                <p class="text-xs text-slate-400 mb-8">Direct Outreach Node. Designed for instant high-volume customer acquisition within 24 hours.</p>
+                <button class="w-full py-4 bg-orange-600 text-white rounded-2xl font-bold uppercase tracking-widest text-xs">Trigger Now</button>
+            </div>
+        </div>
+    </section>
+
+    <script>lucide.createIcons();</script>
+</body>
+</html>
