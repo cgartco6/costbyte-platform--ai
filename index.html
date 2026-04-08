@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><title>CostByte | Neural Ecosystem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+        .modal-active { opacity: 1; pointer-events: auto; transform: scale(1); }
+        .modal-hidden { opacity: 0; pointer-events: none; transform: scale(0.95); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-950 font-sans">
+    <nav class="p-6 max-w-7xl mx-auto flex justify-between items-center">
+        <div class="font-black text-2xl tracking-tighter flex items-center gap-2 italic">
+            <i data-lucide="cpu" class="text-indigo-600"></i> COSTBYTE
+        </div>
+        <div class="flex gap-4">
+            <button onclick="openAuth()" class="bg-slate-900 text-white px-6 py-2 rounded-full font-bold text-xs uppercase">Login / Register</button>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-6 py-20">
+        <div class="text-center mb-16">
+            <h1 class="text-6xl font-extrabold tracking-tighter mb-4">NOT A GHOST. <br><span class="text-indigo-600">A REAL BUILD.</span></h1>
+            <p class="text-slate-500 font-medium">Experience the 5-minute recursive build cycle. Quality assets, real compliance.</p>
+        </div>
+
+        <div class="bg-white p-10 rounded-[3rem] shadow-2xl border border-slate-100">
+            <h3 class="text-[10px] font-black uppercase text-indigo-600 mb-4 tracking-widest">Neural Vision Intake</h3>
+            <textarea id="vision" class="w-full bg-slate-50 p-6 rounded-2xl border-none focus:ring-2 focus:ring-indigo-500 mb-8" rows="4" placeholder="Describe your venture (e.g. A Durban-based digital marketing studio using zero-budget scripts)..."></textarea>
+            <button onclick="startProperBuild()" class="w-full bg-indigo-600 text-white py-6 rounded-2xl font-black text-xl hover:shadow-lg hover:shadow-indigo-200 transition-all">INITIALIZE REAL-TIME BUILD</button>
+        </div>
+    </main>
+
+    <div id="auth-modal" class="modal-hidden fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm transition-all duration-300">
+        <div class="bg-white p-10 rounded-[2rem] shadow-2xl w-full max-w-sm relative">
+            <button onclick="closeAuth()" class="absolute top-6 right-6 text-slate-300 hover:text-black"><i data-lucide="x"></i></button>
+            <h2 class="text-2xl font-black mb-6 italic">Secure Access</h2>
+            <div class="space-y-4">
+                <input type="email" id="email" placeholder="Secure Email" class="w-full p-4 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-indigo-500">
+                <input type="password" id="pass" placeholder="Password" class="w-full p-4 bg-slate-50 rounded-xl outline-none border border-slate-100 focus:border-indigo-500">
+                <button onclick="login()" class="w-full bg-slate-950 text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs">Verify & Enter</button>
+                <p class="text-[9px] text-center text-slate-400 font-bold">BY ENTERING, YOU ACCEPT POPIA/GDPR TERMS.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        function openAuth() { document.getElementById('auth-modal').classList.replace('modal-hidden', 'modal-active'); }
+        function closeAuth() { document.getElementById('auth-modal').classList.replace('modal-active', 'modal-hidden'); }
+        function startProperBuild() {
+            const v = document.getElementById('vision').value;
+            if(!v) return alert("Vision required, beautiful.");
+            window.location.href = `dashboard.html?vision=${encodeURIComponent(v)}&build=proper`;
+        }
+        function login() { window.location.href = 'owner.html'; }
+    </script>
+</body>
+</html>
