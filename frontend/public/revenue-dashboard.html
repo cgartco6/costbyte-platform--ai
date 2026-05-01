@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Revenue Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-100 p-6">
+<div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl font-black mb-6">💰 Revenue & Targets</h1>
+    <div id="stats" class="grid grid-cols-3 gap-4 mb-8"></div>
+    <div class="bg-white rounded-2xl p-6 shadow mb-8">
+        <h2 class="font-bold mb-2">Set Monthly Target (ZAR)</h2>
+        <div class="flex gap-2">
+            <input type="number" id="targetInput" class="border rounded-lg p-2 flex-1" placeholder="e.g., 10000">
+            <button id="setTargetBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">Update</button>
+        </div>
+    </div>
+    <div class="bg-white rounded-2xl p-6 shadow">
+        <canvas id="revenueChart" height="250"></canvas>
+    </div>
+</div>
+<script>
+    const token = localStorage.getItem('token');
+    let userId = null;
+    async function fetchUserId() {
+        const res = await fetch('/api/auth/me', { headers: { 'Authorization': `Bearer ${token}` } });
+        const data = await res.json();
+        userId = data.userId;
+        loadDashboard();
+    }
+    async function loadDashboard() {
+        const res = await fetch(`/api/tracking/dashboard/${userId}`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const data = await res.json();
+        document.getElementById('stats').innerHTML = `
+            <div class="bg-white p-4 rounded-xl shadow">💰 Total Revenue<br><span class="text-2xl font-black">R${data.totalRevenue.toFixed(2)}</span></div>
+            <div class="bg-white p-4 rounded-xl shadow">📈 MRR<br><span class="text-2xl font-black">R${data.mrr.toFixed(2)}</span></div>
+            <div class="bg-white p-4 rounded-xl shadow">🎯 Progress vs Target<br><span class="text-2xl font-black">${data.progress.toFixed(1)}%</span><div class="w-full bg-gray-200 rounded-full h-2 mt-2"><div class="bg-indigo-600 h-2 rounded-full" style="width:${Math.min(data.progress,100)}%"></div></div></div>
+        `;
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.transactions.map(t => t.recorded_at.split(' ')[0]),
+                datasets: [{ label: 'Revenue (ZAR)', data: data.transactions.map(t => t.amount), borderColor: '#4F46E5', tension: 0.2 }]
+            }
+        });
+    }
+    async function setTarget() {
+        const monthlyTarget = parseFloat(document.getElementById('targetInput').value);
+        await fetch('/api/tracking/set-target', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ monthlyTarget })
+        });
+        alert('Target updated');
+        loadDashboard();
+    }
+    document.getElementById('setTargetBtn').addEventListener('click', setTarget);
+    fetchUserId();
+</script>
+</body>
+</html>
