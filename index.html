@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>CostByte – Launch Your AI-Powered Startup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #fff; }
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: url('1000133898.jpg') no-repeat center center/cover;
+            background-attachment: fixed;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 100%);
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            padding: 2rem;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .hero h1 { font-size: 4rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 1rem; }
+        .hero p { font-size: 1.25rem; margin-bottom: 2rem; }
+        .btn-primary {
+            background: #4f46e5;
+            color: white;
+            font-weight: 600;
+            padding: 1rem 2.5rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: 0.2s;
+            display: inline-block;
+            box-shadow: 0 8px 20px rgba(79,70,229,0.3);
+        }
+        .btn-primary:hover { background: #4338ca; transform: scale(1.02); }
+        .features {
+            max-width: 1200px;
+            margin: 5rem auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        .feature-card {
+            background: #fff;
+            border-radius: 2rem;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+        }
+        .feature-card:hover { transform: translateY(-6px); border-color: #4f46e5; }
+        .feature-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .feature-card h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; }
+        .feature-card p { color: #475569; }
+        .cta-section {
+            background: #0f172a;
+            color: white;
+            text-align: center;
+            padding: 4rem 2rem;
+            border-radius: 3rem;
+            margin: 3rem 1.5rem;
+        }
+        .cta-section h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; }
+        .cta-section .btn-primary { background: #f97316; box-shadow: none; }
+        .cta-section .btn-primary:hover { background: #ea580c; }
+        footer { text-align: center; padding: 2rem; color: #64748b; border-top: 1px solid #e2e8f0; font-size: 0.875rem; }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>From Idea to <span style="color:#facc15;">Launched Startup</span></h1>
+            <p>AI generates your business plan, logo, website, legal docs & marketing.<br>Pay once. Download everything. No nonsense.</p>
+            <a href="builder.html" class="btn-primary">🚀 Start Your Venture →</a>
+        </div>
+    </section>
+    <div class="features">
+        <div class="feature-card"><div class="feature-icon">📄</div><h3>Real Business Plan</h3><p>Professional PDF with financials, strategy, and market analysis – tailored to your idea.</p></div>
+        <div class="feature-card"><div class="feature-icon">🎨</div><h3>Full Brand Identity</h3><p>Logo (PNG/SVG), colour palette, social banners – your style, your rules.</p></div>
+        <div class="feature-card"><div class="feature-icon">⚖️</div><h3>Legal Compliance</h3><p>POPIA, CPA, Terms & Privacy – generated for South Africa & global ready.</p></div>
+        <div class="feature-card"><div class="feature-icon">🌐</div><h3>Website + Marketing</h3><p>One‑page site + marketing plan & content calendar. No code needed.</p></div>
+    </div>
+    <div class="cta-section">
+        <h2>Ready to build your empire?</h2>
+        <p>From R0 (free tier) to R4,999 – includes everything you need to launch.</p>
+        <a href="builder.html" class="btn-primary mt-4 inline-block">Choose Package →</a>
+    </div>
+    <footer>
+        <p>© 2026 CostByte — AI Venture Studio. Honest, compliant, professional.</p>
+    </footer>
+</body>
+</html>
