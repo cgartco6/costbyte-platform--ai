@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CostByte – AI Venture Builder</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://js.stripe.com/v3/"></script>
-    <script src="https://www.paypal.com/sdk/js?client-id={{PAYPAL_CLIENT_ID}}&currency=ZAR"></script>
     <style>
         body { background: #f8fafc; }
         .brand-preview { width: 40px; height: 40px; border-radius: 8px; display: inline-block; margin: 0 4px; }
@@ -14,9 +12,16 @@
 </head>
 <body class="p-6 md:p-12">
 <div class="max-w-5xl mx-auto">
-    <div class="bg-white rounded-2xl shadow-xl p-6 mb-8">
-        <h1 class="text-3xl font-black text-slate-800">⚡ CostByte Studio</h1>
-        <p class="text-slate-500">AI generates your business plan, logo, website, legal docs. Pay once, download everything.</p>
+    <!-- Header with cart icon -->
+    <div class="bg-white rounded-2xl shadow-xl p-6 mb-8 flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-black text-slate-800">⚡ CostByte Studio</h1>
+            <p class="text-slate-500">AI generates your business plan, logo, website, legal docs. Pay once, download everything.</p>
+        </div>
+        <a href="/cart.html" class="relative">
+            <svg class="w-8 h-8 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6M17 13l1.5 6M9 21h6M12 21v-6"></path></svg>
+            <span id="cartCountBadge" class="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+        </a>
     </div>
 
     <!-- Step 1: Describe -->
@@ -59,87 +64,86 @@
         </div>
     </div>
 
-    <!-- Step 3: Package & Payment -->
+    <!-- Step 3: Packages -->
     <div class="bg-white rounded-2xl shadow p-6 mb-6">
         <h2 class="text-xl font-bold mb-3">3. Choose your package (ZAR)</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div class="border rounded-xl p-4 text-center cursor-pointer hover:border-indigo-400" data-pkg="starter">
+            <div class="border rounded-xl p-4 text-center cursor-pointer hover:border-indigo-400" data-pkg="starter" data-price="999">
                 <p class="font-bold">Starter</p>
                 <p class="text-2xl font-black">R999</p>
                 <ul class="text-xs text-slate-500 mt-2"><li>✓ Business plan</li><li>✓ Logo + banners</li><li>✓ Landing page</li></ul>
+                <button class="mt-4 bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-sm font-semibold add-to-cart">Add to Cart</button>
             </div>
-            <div class="border rounded-xl p-4 text-center cursor-pointer bg-indigo-50 border-indigo-500" data-pkg="professional">
+            <div class="border rounded-xl p-4 text-center cursor-pointer border-indigo-500 bg-indigo-50" data-pkg="professional" data-price="1999">
                 <p class="font-bold">Professional</p>
                 <p class="text-2xl font-black">R1,999</p>
                 <ul class="text-xs text-slate-500 mt-2"><li>✓ Starter +</li><li>✓ Marketing plan</li><li>✓ Full website</li></ul>
+                <button class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-full text-sm font-semibold add-to-cart">Add to Cart</button>
             </div>
-            <div class="border rounded-xl p-4 text-center cursor-pointer hover:border-indigo-400" data-pkg="enterprise">
+            <div class="border rounded-xl p-4 text-center cursor-pointer hover:border-indigo-400" data-pkg="enterprise" data-price="4999">
                 <p class="font-bold">Enterprise</p>
                 <p class="text-2xl font-black">R4,999</p>
                 <ul class="text-xs text-slate-500 mt-2"><li>✓ Everything +</li><li>✓ 30-day campaign</li><li>✓ Auto social posting</li></ul>
+                <button class="mt-4 bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-sm font-semibold add-to-cart">Add to Cart</button>
             </div>
         </div>
-        <input type="hidden" id="selectedPkg" value="professional">
-
-        <h3 class="font-semibold mb-2">Payment method</h3>
-        <div class="flex flex-wrap gap-3 mb-6">
-            <button data-payment="stripe" class="payment-method px-4 py-2 rounded-full border bg-white">💳 Credit Card (Stripe)</button>
-            <button data-payment="paypal" class="payment-method px-4 py-2 rounded-full border bg-white">🅿️ PayPal</button>
-            <button data-payment="payfast" class="payment-method px-4 py-2 rounded-full border bg-white">🇿🇦 PayFast</button>
-            <button data-payment="eft" class="payment-method px-4 py-2 rounded-full border bg-white">🏦 Direct EFT (FNB)</button>
-        </div>
-        <input type="hidden" id="selectedPayment" value="stripe">
-
-        <button id="payAndGenerateBtn" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition">Pay & Generate Assets →</button>
     </div>
 
-    <div id="statusMsg" class="text-center text-sm text-slate-500"></div>
+    <div class="text-center">
+        <a href="/cart.html" class="inline-block bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold">View Cart & Checkout →</a>
+    </div>
 </div>
 
 <script>
-    // ---------- Helper: get token ----------
-    let token = localStorage.getItem('token');
-    if (!token) {
-        // Quick demo login – replace with proper modal in production
-        const email = prompt('Demo login: enter email (will auto-create)');
-        const password = prompt('Enter password (min 6 chars)');
-        fetch('/api/auth/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-        }).then(() => fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-        })).then(r => r.json()).then(data => {
-            localStorage.setItem('token', data.token);
-            token = data.token;
-            alert('Logged in automatically');
-        }).catch(() => alert('Login failed, refresh and try again'));
+    // Cart functions
+    function getCart() { return JSON.parse(localStorage.getItem('costbyte_cart') || '[]'); }
+    function saveCart(cart) { localStorage.setItem('costbyte_cart', JSON.stringify(cart)); updateCartCount(); }
+    function updateCartCount() {
+        const cart = getCart();
+        const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+        const badge = document.getElementById('cartCountBadge');
+        if (totalItems > 0) {
+            badge.innerText = totalItems;
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
     }
 
-    // ---------- Package selection UI ----------
-    const packages = { starter: 999, professional: 1999, enterprise: 4999 };
-    document.querySelectorAll('[data-pkg]').forEach(el => {
-        el.addEventListener('click', () => {
-            document.querySelectorAll('[data-pkg]').forEach(e => e.classList.remove('bg-indigo-50', 'border-indigo-500'));
-            el.classList.add('bg-indigo-50', 'border-indigo-500');
-            document.getElementById('selectedPkg').value = el.getAttribute('data-pkg');
+    // Add to cart
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const card = btn.closest('[data-pkg]');
+            const pkg = card.getAttribute('data-pkg');
+            const price = parseFloat(card.getAttribute('data-price'));
+            const description = document.getElementById('vision').value.trim() || "Your venture";
+            const branding = {
+                primary: document.getElementById('primaryColor').value,
+                secondary: document.getElementById('secondaryColor').value,
+                font: document.getElementById('fontFamily').value,
+                logoStyle: document.getElementById('logoStyle').value
+            };
+            let cart = getCart();
+            const existing = cart.find(item => item.packageName === pkg);
+            if (existing) {
+                existing.quantity++;
+            } else {
+                cart.push({
+                    packageName: pkg,
+                    price: price,
+                    description: description,
+                    branding: branding,
+                    quantity: 1
+                });
+            }
+            saveCart(cart);
+            alert(`Added ${pkg} package to cart`);
         });
     });
-    // Payment method
-    document.querySelectorAll('.payment-method').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.payment-method').forEach(b => b.classList.remove('bg-indigo-100', 'border-indigo-600'));
-            btn.classList.add('bg-indigo-100', 'border-indigo-600');
-            document.getElementById('selectedPayment').value = btn.getAttribute('data-payment');
-        });
-    });
-    // Default selection highlight
-    document.querySelector('[data-pkg="professional"]').click();
-    document.querySelector('.payment-method').click();
 
-    // ---------- Live colour preview ----------
+    updateCartCount();
+    // Live colour preview
     document.getElementById('primaryColor').addEventListener('input', e => {
         document.getElementById('primaryHex').innerText = e.target.value;
         document.querySelectorAll('.brand-preview')[0].style.backgroundColor = e.target.value;
@@ -147,70 +151,6 @@
     document.getElementById('secondaryColor').addEventListener('input', e => {
         document.getElementById('secondaryHex').innerText = e.target.value;
         document.querySelectorAll('.brand-preview')[1].style.backgroundColor = e.target.value;
-    });
-
-    // ---------- Payment & generation ----------
-    const payBtn = document.getElementById('payAndGenerateBtn');
-    payBtn.addEventListener('click', async () => {
-        if (!token) { alert('Please wait – login in progress'); return; }
-        const vision = document.getElementById('vision').value.trim();
-        if (!vision) { alert('Describe your business idea'); return; }
-        const pkg = document.getElementById('selectedPkg').value;
-        const price = packages[pkg];
-        const branding = {
-            primary: document.getElementById('primaryColor').value,
-            secondary: document.getElementById('secondaryColor').value,
-            font: document.getElementById('fontFamily').value,
-            logoStyle: document.getElementById('logoStyle').value
-        };
-        // Create project
-        const projRes = await fetch('/api/projects', {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ description: vision, package: pkg, price, branding })
-        });
-        const { projectId } = await projRes.json();
-        const paymentMethod = document.getElementById('selectedPayment').value;
-
-        // Redirect or process based on method
-        if (paymentMethod === 'stripe') {
-            const stripe = Stripe('{{STRIPE_PUBLISHABLE_KEY}}'); // Replace with your key
-            const res = await fetch('/api/payment/create-stripe-payment', {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amount: price, projectId })
-            });
-            const { clientSecret } = await res.json();
-            const { error } = await stripe.confirmPayment({
-                clientSecret,
-                confirmParams: { return_url: window.location.origin + '/payment-success.html' }
-            });
-            if (error) alert(error.message);
-        } else if (paymentMethod === 'paypal') {
-            const res = await fetch('/api/payment/create-paypal-order', {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amount: price, projectId })
-            });
-            const { orderId } = await res.json();
-            window.location.href = `/api/payment/execute-paypal?orderId=${orderId}&projectId=${projectId}`;
-        } else if (paymentMethod === 'payfast') {
-            const res = await fetch('/api/payment/create-payfast', {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amount: price, projectId, description: vision })
-            });
-            const { payfastForm } = await res.json();
-            document.body.innerHTML = payfastForm;
-            document.forms[0].submit();
-        } else if (paymentMethod === 'eft') {
-            await fetch('/api/payment/eft-notify', {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ projectId })
-            });
-            alert(`Please pay R${price} via EFT to FNB Account 62899800711 (CostByte Pty Ltd), Ref: ${projectId}. We'll confirm within 24h.`);
-        }
     });
 </script>
 </body>
