@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>CostByte Builder</title><script src="https://cdn.tailwindcss.com"></script><script src="https://js.stripe.com/v3/"></script><script src="https://www.paypal.com/sdk/js?client-id={{PAYPAL_CLIENT_ID}}&currency=ZAR"></script></head>
+<body class="bg-slate-50 p-6">
+<div class="max-w-4xl mx-auto">
+  <h1 class="text-3xl font-black mb-6">Build Your Startup</h1>
+  <div class="bg-white p-6 rounded-2xl shadow mb-6">
+    <label class="block font-bold mb-2">Describe your business idea</label>
+    <textarea id="vision" rows="3" class="w-full border rounded-lg p-3"></textarea>
+  </div>
+  <div class="bg-white p-6 rounded-2xl shadow mb-6">
+    <h2 class="font-bold mb-3">Branding</h2>
+    <div class="grid grid-cols-2 gap-4"><div>Primary: <input type="color" id="primaryColor" value="#4F46E5"></div><div>Secondary: <input type="color" id="secondaryColor" value="#F59E0B"></div></div>
+    <div class="mt-2"><label>Font: <select id="fontFamily"><option>Inter</option><option>Roboto</option></select></label></div>
+    <div class="mt-2"><label>Logo style: <select id="logoStyle"><option>minimal</option><option>bold</option><option>elegant</option><option>playful</option></select></label></div>
+  </div>
+  <div class="bg-white p-6 rounded-2xl shadow mb-6">
+    <h2 class="font-bold mb-3">Package (ZAR)</h2>
+    <div class="flex gap-4"><button onclick="selectPackage('starter')" class="p-3 border rounded">Starter R999</button><button onclick="selectPackage('professional')" class="p-3 border rounded bg-indigo-50">Professional R1999</button><button onclick="selectPackage('enterprise')" class="p-3 border rounded">Enterprise R4999</button></div>
+    <div class="mt-4"><label>Payment: <select id="paymentMethod"><option>stripe</option><option>paypal</option><option>payfast</option><option>eft</option></select></label></div>
+    <button id="payBtn" class="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-full">Pay & Generate</button>
+  </div>
+</div>
+<script>
+  let token = localStorage.getItem('token');
+  let selectedPackage = 'professional';
+  const prices = { starter:999, professional:1999, enterprise:4999 };
+  function selectPackage(pkg) { selectedPackage = pkg; }
+  document.getElementById('payBtn').onclick = async () => {
+    if (!token) { alert('Please login first'); return; }
+    const vision = document.getElementById('vision').value;
+    if (!vision) { alert('Describe your idea'); return; }
+    const branding = { primary: document.getElementById('primaryColor').value, secondary: document.getElementById('secondaryColor').value, font: document.getElementById('fontFamily').value, logoStyle: document.getElementById('logoStyle').value };
+    const projectRes = await fetch('/api/projects', { method:'POST', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'}, body: JSON.stringify({ description:vision, package:selectedPackage, price:prices[selectedPackage], branding }) });
+    const { projectId } = await projectRes.json();
+    const paymentMethod = document.getElementById('paymentMethod').value;
+    if (paymentMethod === 'stripe') {
+      const stripe = Stripe('{{STRIPE_PUBLISHABLE_KEY}}');
+      const res = await fetch('/api/payment/create-stripe-payment', { method:'POST', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'}, body:JSON.stringify({ amount:prices[selectedPackage], projectId }) });
+      const { clientSecret } = await res.json();
+      await stripe.confirmPayment({ clientSecret, confirmParams: { return_url: window.location.origin + '/payment-success.html' } });
+    } else if (paymentMethod === 'paypal') {
+      const res = await fetch('/api/payment/create-paypal-order', { method:'POST', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'}, body:JSON.stringify({ amount:prices[selectedPackage], projectId }) });
+      const { orderId } = await res.json();
+      window.location.href = `/api/payment/execute-paypal?orderId=${orderId}&projectId=${projectId}`;
+    } else if (paymentMethod === 'payfast') {
+      const res = await fetch('/api/payment/create-payfast', { method:'POST', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'}, body:JSON.stringify({ amount:prices[selectedPackage], projectId, description:vision }) });
+      const { payfastForm } = await res.json();
+      document.body.innerHTML = payfastForm;
+      document.forms[0].submit();
+    } else {
+      await fetch('/api/payment/eft-notify', { method:'POST', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'}, body:JSON.stringify({ projectId }) });
+      alert('Please pay via EFT to FNB Acc 62899800711 (CostByte Pty Ltd) with reference '+projectId);
+    }
+  };
+  // Simple login modal (you can extend)
+  if (!token) { const email = prompt('Email (demo)'); const pwd = prompt('Password'); fetch('/api/auth/register', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pwd})}).then(()=>fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pwd})})).then(r=>r.json()).then(d=>{localStorage.setItem('token',d.token); token=d.token; alert('Logged in');}).catch(e=>alert('Use existing account')); }
+</script>
+</body>
+</html>
