@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Specialist Targeting Agent – CostByte</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-50 font-sans">
+    <nav class="bg-white shadow-sm border-b"><div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center"><a href="index.html" class="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">CostByte</a><a href="builder.html" class="text-slate-600 hover:text-indigo-600">← Back to Builder</a></div></nav>
+    <main class="max-w-4xl mx-auto px-4 py-12">
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div class="bg-gradient-to-r from-orange-500 to-red-600 px-6 py-8 text-white"><h1 class="text-3xl font-extrabold">🔥 Specialist Targeting Agent</h1><p class="text-lg opacity-90 mt-2">Get 1,000 buying clients in 2 days – guaranteed.</p></div>
+            <div class="p-6"><div class="grid md:grid-cols-2 gap-8">
+                <div><h2 class="text-xl font-bold mb-3">What you get</h2><ul class="space-y-2"><li class="flex gap-2">✓ Global multi‑channel ad campaign</li><li>✓ 1,000 verified leads interested in buying your product</li><li>✓ Real‑time dashboard</li><li>✓ 48‑hour delivery after campaign start</li><li>✓ Full compliance (no spam)</li></ul><div class="mt-6 p-4 bg-amber-50 rounded-xl"><p class="font-bold text-amber-800">Special launch price:</p><p class="text-4xl font-black">R499 <span class="text-sm line-through text-slate-400">R1,999</span></p></div></div>
+                <div><h2 class="text-xl font-bold mb-3">Start your campaign (demo)</h2><form id="targetingForm"><div class="mb-4"><label class="block text-sm font-semibold mb-1">Your product/service name</label><input type="text" id="productName" class="w-full border rounded-xl px-4 py-2" required></div><div class="mb-4"><label class="block text-sm font-semibold mb-1">Target audience description</label><textarea id="audienceDesc" rows="3" class="w-full border rounded-xl px-4 py-2" placeholder="e.g., Small business owners in Cape Town who need affordable accounting software"></textarea></div><button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl transition">Launch Campaign (Demo) →</button></form><p class="text-xs text-slate-400 mt-2">Demo mode – shows simulated progress. For real leads, deploy backend.</p></div>
+            </div></div>
+        </div>
+        <div id="trackerPanel" class="mt-8 bg-white rounded-2xl shadow-md p-6 hidden"><h2 class="text-xl font-bold mb-4">📊 Campaign Progress (Demo)</h2><div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"><div class="text-center"><div class="text-2xl font-black text-indigo-600" id="impressions">0</div><div class="text-xs text-slate-500">Impressions</div></div><div class="text-center"><div class="text-2xl font-black text-indigo-600" id="clicks">0</div><div class="text-xs text-slate-500">Clicks</div></div><div class="text-center"><div class="text-2xl font-black text-green-600" id="leads">0</div><div class="text-xs text-slate-500">Leads</div></div><div class="text-center"><div class="text-2xl font-black text-orange-600" id="conversions">0</div><div class="text-xs text-slate-500">Conversions</div></div></div><div class="w-full bg-slate-200 rounded-full h-2"><div id="progressBar" class="bg-orange-500 h-2 rounded-full" style="width:0%"></div></div><p class="text-xs text-slate-400 mt-2">Target: 1,000 buying clients (simulated)</p></div>
+    </main>
+    <script>
+        let interval;
+        document.getElementById('targetingForm').addEventListener('submit', (e)=>{
+            e.preventDefault();
+            const product = document.getElementById('productName').value;
+            if(!product){alert('Please enter product name');return;}
+            document.getElementById('trackerPanel').classList.remove('hidden');
+            if(interval) clearInterval(interval);
+            let leads = 0, impressions = 0, clicks = 0, conversions = 0;
+            const impEl = document.getElementById('impressions');
+            const clickEl = document.getElementById('clicks');
+            const leadEl = document.getElementById('leads');
+            const convEl = document.getElementById('conversions');
+            const progressBar = document.getElementById('progressBar');
+            interval = setInterval(()=>{
+                impressions += Math.floor(Math.random()*200)+50;
+                clicks += Math.floor(impressions*0.05) - clicks;
+                leads += Math.floor(Math.random()*15);
+                conversions = Math.floor(leads*0.7);
+                if(conversions>1000) conversions=1000;
+                impEl.innerText = impressions;
+                clickEl.innerText = clicks;
+                leadEl.innerText = leads;
+                convEl.innerText = conversions;
+                const percent = (conversions/1000)*100;
+                progressBar.style.width = `${percent}%`;
+                if(conversions>=1000){ clearInterval(interval); alert('Demo: Campaign reached 1,000 buying clients! (This is a simulation)'); }
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
