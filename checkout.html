@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout – CostByte</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-50 font-sans">
+    <nav class="bg-white shadow-sm border-b"><div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center"><a href="index.html" class="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">CostByte</a><a href="cart.html" class="text-slate-600 hover:text-indigo-600">← Back to Cart</a></div></nav>
+    <main class="max-w-6xl mx-auto px-4 py-12">
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="bg-white rounded-2xl shadow-md p-6"><h2 class="text-2xl font-bold mb-6">Contact & Payment</h2>
+                <form id="checkoutForm"><div class="mb-4"><label class="block text-sm font-semibold mb-1">Full Name</label><input type="text" id="fullName" class="w-full border rounded-xl px-4 py-2" required></div>
+                <div class="mb-4"><label class="block text-sm font-semibold mb-1">Email Address</label><input type="email" id="email" class="w-full border rounded-xl px-4 py-2" required></div>
+                <div class="mb-6"><label class="block text-sm font-semibold mb-1">Payment Method</label><select id="paymentMethod" class="w-full border rounded-xl px-4 py-2"><option>Credit Card (Stripe demo)</option><option>PayPal demo</option><option>PayFast demo</option><option>Direct EFT (FNB)</option></select></div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition">Place Order & Pay (Demo)</button></form>
+                <p class="text-xs text-slate-400 mt-4 text-center">This is a static demo. For real payments, deploy the backend on Render.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-md p-6"><h2 class="text-2xl font-bold mb-6">Order Summary</h2><div id="orderItems" class="space-y-3 mb-4"></div><div class="border-t pt-4 space-y-2"><div class="flex justify-between"><span>Subtotal:</span><span id="summarySubtotal">R0.00</span></div><div class="flex justify-between"><span>VAT (15%):</span><span id="summaryVat">R0.00</span></div><div class="flex justify-between text-xl font-black pt-2"><span>Total:</span><span id="summaryTotal">R0.00</span></div></div></div>
+        </div>
+    </main>
+    <script>
+        function getCart() { return JSON.parse(localStorage.getItem('costbyte_cart') || '[]'); }
+        function displayOrderSummary() {
+            const cart = getCart();
+            if(cart.length===0){window.location.href='cart.html';return;}
+            let subtotal = cart.reduce((s,i)=>s+(i.price*i.quantity),0);
+            let vat = subtotal*0.15;
+            document.getElementById('orderItems').innerHTML = cart.map(i=>`<div class="flex justify-between"><span>${i.packageName} x${i.quantity}</span><span>R${(i.price*i.quantity).toFixed(2)}</span></div>`).join('');
+            document.getElementById('summarySubtotal').innerText = `R${subtotal.toFixed(2)}`;
+            document.getElementById('summaryVat').innerText = `R${vat.toFixed(2)}`;
+            document.getElementById('summaryTotal').innerText = `R${(subtotal+vat).toFixed(2)}`;
+            return subtotal+vat;
+        }
+        displayOrderSummary();
+        document.getElementById('checkoutForm').addEventListener('submit', (e)=>{
+            e.preventDefault();
+            alert('This is a static demo on GitHub Pages. To process real payments and AI generation, deploy the backend on Render.com. Your order summary: Total = '+document.getElementById('summaryTotal').innerText);
+        });
+    </script>
+</body>
+</html>
