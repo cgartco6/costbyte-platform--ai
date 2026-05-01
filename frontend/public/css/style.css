@@ -1,0 +1,7 @@
+/* CostByte custom styles */
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+.brand-preview {
+    transition: background 0.2s;
+}
