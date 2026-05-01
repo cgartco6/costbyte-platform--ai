@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revenue Tracker – CostByte</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-50 font-sans">
+    <nav class="bg-white border-b"><div class="max-w-7xl mx-auto px-4 py-3"><a href="index.html" class="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">CostByte</a></div></nav>
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <h1 class="text-3xl font-extrabold mb-2">Revenue & Targets (Demo)</h1>
+        <div class="grid grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-2xl shadow"><div class="text-slate-500">Total Revenue</div><div class="text-3xl font-black">R2,998</div></div>
+            <div class="bg-white p-6 rounded-2xl shadow"><div class="text-slate-500">MRR</div><div class="text-3xl font-black">R250</div></div>
+            <div class="bg-white p-6 rounded-2xl shadow"><div class="text-slate-500">Progress vs Target</div><div class="text-3xl font-black">25%</div><div class="w-full bg-slate-200 rounded-full h-2 mt-2"><div class="bg-indigo-600 h-2 rounded-full" style="width:25%"></div></div></div>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow"><canvas id="revenueChart" height="200"></canvas></div>
+        <p class="text-xs text-slate-400 mt-4 text-center">Static demo. Connect to backend for live data.</p>
+    </div>
+    <script>new Chart(document.getElementById('revenueChart'),{type:'line',data:{labels:['Jan','Feb','Mar'],datasets:[{label:'Revenue (ZAR)',data:[500,1200,2998],borderColor:'#4f46e5'}]}});</script>
+</body>
+</html>
