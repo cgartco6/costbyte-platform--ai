@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart – CostByte</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; }
+        .cart-item { transition: all 0.2s; }
+        .cart-item:hover { background: #f1f5f9; }
+    </style>
+</head>
+<body>
+    <nav class="bg-white shadow-sm border-b sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="/" class="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">CostByte</a>
+            <div class="flex gap-4">
+                <a href="/dashboard.html" class="text-slate-600 hover:text-indigo-600">Dashboard</a>
+                <a href="/cart.html" class="text-indigo-600 font-semibold">Cart</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 py-12">
+        <h1 class="text-3xl font-extrabold text-slate-800 mb-2">Shopping Cart</h1>
+        <p class="text-slate-500 mb-8">Review your selected packages before checkout.</p>
+
+        <div id="cartItemsContainer" class="space-y-4 mb-8">
+            <!-- Cart items will be injected here -->
+            <div class="text-center py-12 text-slate-400">Loading cart...</div>
+        </div>
+
+        <div id="cartSummary" class="bg-white rounded-2xl shadow-md p-6 mb-8 hidden">
+            <div class="flex justify-between text-lg font-bold">
+                <span>Subtotal:</span>
+                <span id="cartSubtotal">R0.00</span>
+            </div>
+            <div class="mt-2 text-sm text-slate-500">VAT (15%): <span id="cartVat">R0.00</span></div>
+            <div class="mt-4 pt-4 border-t text-2xl font-black flex justify-between">
+                <span>Total (ZAR):</span>
+                <span id="cartTotal">R0.00</span>
+            </div>
+            <div class="mt-6">
+                <a href="/checkout.html" id="checkoutBtn" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white text-center font-bold py-3 rounded-xl transition">Proceed to Checkout →</a>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="/index.html" class="text-indigo-600 hover:underline">← Continue Shopping</a>
+        </div>
+    </main>
+
+    <script>
+        // Cart functions (same as in index.html, but shared)
+        function getCart() {
+            const cart = localStorage.getItem('costbyte_cart');
+            return cart ? JSON.parse(cart) : [];
+        }
+
+        function saveCart(cart) {
+            localStorage.setItem('costbyte_cart', JSON.stringify(cart));
+            updateCartCount();
+        }
+
+        function updateCartCount() {
+            const cart = getCart();
+            const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            const cartCountElements = document.querySelectorAll('.cart-count');
+            cartCountElements.forEach(el => {
+                if (totalItems > 0) {
+                    el.textContent = totalItems;
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+        }
+
+        function removeFromCart(index) {
+            let cart = getCart();
+            cart.splice(index, 1);
+            saveCart(cart);
+            renderCart();
+        }
+
+        function updateQuantity(index, newQuantity) {
+            if (newQuantity < 1) return;
+            let cart = getCart();
+            cart[index].quantity = newQuantity;
+            saveCart(cart);
+            renderCart();
+        }
+
+        function renderCart() {
+            const cart = getCart();
+            const container = document.getElementById('cartItemsContainer');
+            const summaryBox = document.getElementById('cartSummary');
+
+            if (cart.length === 0) {
+                container.innerHTML = `<div class="bg-white rounded-2xl shadow-md p-8 text-center"><div class="text-6xl mb-4">🛒</div><p class="text-slate-500">Your cart is empty.</p><a href="/index.html" class="inline-block mt-4 text-indigo-600 font-semibold">Start building your venture →</a></div>`;
+                summaryBox.classList.add('hidden');
+                return;
+            }
+
+            summaryBox.classList.remove('hidden');
+            container.innerHTML = cart.map((item, idx) => `
+                <div class="cart-item bg-white rounded-xl shadow-sm border p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div class="flex-1">
+                        <h3 class="font-bold text-lg">${item.packageName} Package</h3>
+                        <p class="text-sm text-slate-500">Price per unit: R${item.price.toFixed(2)}</p>
+                        <div class="text-xs text-indigo-600 mt-1">${item.description.substring(0, 60)}</div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="updateQuantity(${idx}, ${item.quantity - 1})" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200">-</button>
+                        <span class="w-8 text-center font-bold">${item.quantity}</span>
+                        <button onclick="updateQuantity(${idx}, ${item.quantity + 1})" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200">+</button>
+                    </div>
+                    <div class="w-28 text-right font-bold">R${(item.price * item.quantity).toFixed(2)}</div>
+                    <button onclick="removeFromCart(${idx})" class="text-red-500 hover:text-red-700 text-sm">Remove</button>
+                </div>
+            `).join('');
+
+            // Calculate totals
+            let subtotal = 0;
+            cart.forEach(item => { subtotal += item.price * item.quantity; });
+            const vat = subtotal * 0.15;
+            const total = subtotal + vat;
+            document.getElementById('cartSubtotal').innerText = `R${subtotal.toFixed(2)}`;
+            document.getElementById('cartVat').innerText = `R${vat.toFixed(2)}`;
+            document.getElementById('cartTotal').innerText = `R${total.toFixed(2)}`;
+        }
+
+        // Initial render
+        renderCart();
+        updateCartCount();
+    </script>
+</body>
+</html>
