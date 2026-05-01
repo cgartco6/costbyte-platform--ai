@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout – CostByte</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id={{PAYPAL_CLIENT_ID}}&currency=ZAR"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-50">
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="/" class="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">CostByte</a>
+            <a href="/cart.html" class="text-slate-600 hover:text-indigo-600">← Back to Cart</a>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-4 py-12">
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Checkout form -->
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <h2 class="text-2xl font-bold mb-6">Contact & Payment</h2>
+                <form id="checkoutForm">
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold mb-1">Full Name</label>
+                        <input type="text" id="fullName" class="w-full border rounded-xl px-4 py-2" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold mb-1">Email Address</label>
+                        <input type="email" id="email" class="w-full border rounded-xl px-4 py-2" required>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-sm font-semibold mb-1">Payment Method</label>
+                        <select id="paymentMethod" class="w-full border rounded-xl px-4 py-2">
+                            <option value="stripe">Credit Card (Stripe)</option>
+                            <option value="paypal">PayPal</option>
+                            <option value="payfast">PayFast</option>
+                            <option value="eft">Direct EFT (FNB)</option>
+                        </select>
+                    </div>
+                    <button type="submit" id="placeOrderBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition">Place Order & Pay</button>
+                </form>
+            </div>
+
+            <!-- Order summary -->
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <h2 class="text-2xl font-bold mb-6">Order Summary</h2>
+                <div id="orderItems" class="space-y-3 mb-4"></div>
+                <div class="border-t pt-4 space-y-2">
+                    <div class="flex justify-between"><span>Subtotal:</span><span id="summarySubtotal">R0.00</span></div>
+                    <div class="flex justify-between"><span>VAT (15%):</span><span id="summaryVat">R0.00</span></div>
+                    <div class="flex justify-between text-xl font-black pt-2"><span>Total:</span><span id="summaryTotal">R0.00</span></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Get cart from localStorage
+        function getCart() { return JSON.parse(localStorage.getItem('costbyte_cart') || '[]'); }
+
+        function displayOrderSummary() {
+            const cart = getCart();
+            if (cart.length === 0) {
+                window.location.href = '/cart.html';
+                return;
+            }
+            let subtotal = 0;
+            const container = document.getElementById('orderItems');
+            container.innerHTML = cart.map(item => `<div class="flex justify-between"><span>${item.packageName} x${item.quantity}</span><span>R${(item.price * item.quantity).toFixed(2)}</span></div>`).join('');
+            subtotal = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+            const vat = subtotal * 0.15;
+            const total = subtotal + vat;
+            document.getElementById('summarySubtotal').innerText = `R${subtotal.toFixed(2)}`;
+            document.getElementById('summaryVat').innerText = `R${vat.toFixed(2)}`;
+            document.getElementById('summaryTotal').innerText = `R${total.toFixed(2)}`;
+            return total;
+        }
+
+        let orderTotal = displayOrderSummary();
+
+        // Helper: get auth token (if user logged in) – we'll create a temporary user if not
+        async function ensureUser(email, password = 'temp123') {
+            let token = localStorage.getItem('token');
+            if (token) return token;
+            // Attempt to register/login
+            await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) }).catch(() => {});
+            const res = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
+            if (res.ok) {
+                const data = await res.json();
+                localStorage.setItem('token', data.token);
+                return data.token;
+            }
+            throw new Error('Authentication failed');
+        }
+
+        document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            if (!fullName || !email) { alert('Please fill in all fields'); return; }
+
+            // Ensure user is authenticated
+            let token;
+            try {
+                token = await ensureUser(email);
+            } catch (err) { alert('Login error: ' + err.message); return; }
+
+            const cart = getCart();
+            if (cart.length === 0) { alert('Cart is empty'); return; }
+
+            // Create a project in backend for each cart item? Actually combine into one project with multiple packages.
+            // For simplicity, we combine all items into one project with a total price.
+            const vision = cart.map(item => `${item.quantity}x ${item.packageName} package`).join(', ');
+            const totalPrice = orderTotal; // includes VAT
+
+            const projectRes = await fetch('/api/projects', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ description: vision, package: 'custom', price: totalPrice, branding: {} })
+            });
+            const { projectId } = await projectRes.json();
+
+            // Process payment based on method
+            if (paymentMethod === 'stripe') {
+                const stripe = Stripe('{{STRIPE_PUBLISHABLE_KEY}}'); // replace
+                const res = await fetch('/api/payment/create-stripe-payment', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: totalPrice, projectId })
+                });
+                const { clientSecret } = await res.json();
+                const { error } = await stripe.confirmPayment({ clientSecret, confirmParams: { return_url: window.location.origin + '/payment-success.html' } });
+                if (error) alert(error.message);
+            } else if (paymentMethod === 'paypal') {
+                const res = await fetch('/api/payment/create-paypal-order', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: totalPrice, projectId })
+                });
+                const { orderId } = await res.json();
+                window.location.href = `/api/payment/execute-paypal?orderId=${orderId}&projectId=${projectId}`;
+            } else if (paymentMethod === 'payfast') {
+                const res = await fetch('/api/payment/create-payfast', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: totalPrice, projectId, description: vision })
+                });
+                const { payfastForm } = await res.json();
+                document.body.innerHTML = payfastForm;
+                document.forms[0].submit();
+            } else if (paymentMethod === 'eft') {
+                await fetch('/api/payment/eft-notify', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ projectId })
+                });
+                alert(`Please pay R${totalPrice.toFixed(2)} via EFT to FNB Account 62899800711 (CostByte Pty Ltd), Ref: ${projectId}. We'll confirm within 24h.`);
+                // Clear cart after order placed
+                localStorage.removeItem('costbyte_cart');
+                window.location.href = '/dashboard.html';
+            }
+        });
+    </script>
+</body>
+</html>
